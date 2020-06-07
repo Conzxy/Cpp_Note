@@ -28,7 +28,7 @@ PS:cv-qualified:"c" is const and "v" is vilatile.
 * `pointers` (including pointer-to-function and pointer-to-member) are PODs,
 * `enums` are PODs
 * a `const` or `volatile` POD is a POD.
-* a class, struct or union of PODs is a POD provided that all non-static data members are `public`, 
+* a `class`, `struct` or `union` of PODs is a POD provided that all non-static data members are `public`, 
 and it has no base class and no constructors, destructors, or virtual methods. 
 Static members don't stop something being a POD under this rule. 
 This rule has changed in C++11 and certain private members are allowed.
