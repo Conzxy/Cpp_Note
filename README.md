@@ -10,7 +10,7 @@
 
 ## C++ 11 Standard
 [initializer list](https://github.com/Conzxy/Cpp_Note/blob/master/C%2B%2B11%20Standard/Initializer%20lists.md)<br>
-[POD}(https://github.com/Conzxy/Cpp_Note/blob/master/C%2B%2B11%20Standard/PO)<br>
+[POD](https://github.com/Conzxy/Cpp_Note/blob/master/C%2B%2B11%20Standard/PO)<br>
 
 ## 杂记
 [const and define](https://github.com/Conzxy/Cpp_Note/blob/master/const%E4%B8%8E%23define%E7%9A%84%E5%8C%BA%E5%88%AB.md)<br>
