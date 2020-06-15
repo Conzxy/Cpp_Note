@@ -7,7 +7,7 @@
 
 ## Name lookup
 [Argument name lookup(ADL)](https://github.com/Conzxy/Cpp_Note/blob/master/CPPP/Name%20lookup/ADL.md)<br>
-[Qualified name lookup(include OL and ADL)](https://github.com/Conzxy/Cpp_Note/blob/master/CPPP/Name%20lookup/Unqualified%20name%20lookup.md)<br>
+[Qualified name lookup(including OL and ADL)](https://github.com/Conzxy/Cpp_Note/blob/master/CPPP/Name%20lookup/Unqualified%20name%20lookup.md)<br>
 [Overload resolution](https://github.com/Conzxy/Cpp_Note/blob/master/CPPP/Name%20lookup/Unqualified%20name%20lookup.md)<br>
 [template function](https://github.com/Conzxy/Cpp_Note/blob/master/CPPP/Name%20lookup/Template%20define.md)<br>
 
