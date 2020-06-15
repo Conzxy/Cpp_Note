@@ -54,18 +54,19 @@ endl(std::cout)   //true.The argument of endl is in std namespace so it finds th
 > As the simple code example above demonstrates, Koenig lookup provides convenience and ease of usage to the programmer. Without Koenig lookup there would be an overhead on the programmer, to repeatedly specify the fully qualified names, or instead, use numerous using-declarations.
 
 ## ADL的弊端
-Consider the example of std::swap, which is a standard library algorithm to swap two values. With the Koenig lookup one would have to be cautious while using this algorithm because:
+Consider the example of std::swap, which is a standard library algorithm to swap two values. <br>
+With the Koenig lookup one would have to be cautious while using this algorithm because:
 
-std::swap(obj1,obj2);
+`std::swap(obj1,obj2);`<br>
 may not show the same behavior as:
-
+```cpp
 using std::swap;
 swap(obj1, obj2);
-With ADL, which version of swap function gets called would depend on the namespace of the arguments passed to it.
+```
+With ADL, which version of swap function gets called would depend on the namespace of the arguments passed to it.<br>
+If there exists an namespace A and if A::obj1, A::obj2 & A::swap() exist then the second example will result in a call to A::swap(), which might not be what the user wanted.<br>
 
-If there exists an namespace A and if A::obj1, A::obj2 & A::swap() exist then the second example will result in a call to A::swap(), which might not be what the user wanted.
-
-Further, if for some reason both A::swap(A::MyClass&, A::MyClass&) and std::swap(A::MyClass&, A::MyClass&) are defined, then the first example will call std::swap(A::MyClass&, A::MyClass&) but the second will not compile because swap(obj1, obj2) would be ambiguous.
+Further, if for some reason both `A::swap(A::MyClass&, A::MyClass&)` and `std::swap(A::MyClass&, A::MyClass&)`are defined, then the first example will call `std::swap(A::MyClass&, A::MyClass&)` but the second will not compile because `swap(obj1, obj2)` would be ambiguous.
 ## example
 ```cpp
 namespace A {
