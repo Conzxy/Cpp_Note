@@ -47,7 +47,9 @@ endl(std::cout)   //true.The argument of endl is in std namespace so it finds th
 2) a declaration of a function at block scope (that's not a using-declaration)<br>
 3) any declaration that is not a function or a function template (e.g. a function object or another variable whose name conflicts with the name of the function that's being looked up)<br>
 
-所以，如果查找集中有成员声明、块作用域的声明（non-sing）或是不是函数的声明（包括模板），那么ADL不会被考虑（区别block scope和namespace scope）。
+> What this means is that ADL is ignored only when unqualified lookup produces one of the above three results. Since we are not dealing with a class member, the function is declared at namespace scope, not block scope, and we **only find functions** we continue on and use ADL.
+
+所以，如果查找集中有类成员声明、在块作用域中的函数声明（没有using声明）或者所有声明都不是函数的声明（包括模板），那么ADL不会被考虑（区别block scope和namespace scope）。
 ## ADL的好处
 > As the simple code example above demonstrates, Koenig lookup provides convenience and ease of usage to the programmer. Without Koenig lookup there would be an overhead on the programmer, to repeatedly specify the fully qualified names, or instead, use numerous using-declarations.
 
@@ -64,3 +66,26 @@ With ADL, which version of swap function gets called would depend on the namespa
 If there exists an namespace A and if A::obj1, A::obj2 & A::swap() exist then the second example will result in a call to A::swap(), which might not be what the user wanted.
 
 Further, if for some reason both A::swap(A::MyClass&, A::MyClass&) and std::swap(A::MyClass&, A::MyClass&) are defined, then the first example will call std::swap(A::MyClass&, A::MyClass&) but the second will not compile because swap(obj1, obj2) would be ambiguous.
+## example
+```cpp
+namespace A {
+      struct X;
+      struct Y;
+      void f(int);
+      void g(X);
+}
+
+namespace B {
+    void f(int i) {
+        f(i);   // calls B::f (endless recursion)
+    }
+    void g(A::X x) {
+        g(x);   // Error: ambiguous between B::g (ordinary lookup)
+                //        and A::g (argument-dependent lookup)
+    }
+    void h(A::Y y) {
+        h(y);   // calls B::h (endless recursion): ADL examines the A namespace
+                // but finds no A::h, so only B::h from ordinary lookup is used
+    }
+}
+```

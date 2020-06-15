@@ -8,11 +8,12 @@ C++17 Standard said：
 2.during **instantiation**: from the definition but also, via ADL only, from the instantiation context
 
 名字查找取决于该名字是否依赖于模板，即名字可分为dependent name 和non-dependent name<br>
-### 第一阶段：
+### 定义阶段
 > For a non-dependent name used in a template definition, unqualified name lookup takes place when the template definition is examined. The binding to the declarations made at that point is not affected by declarations visible at the point of instantiation.
 > in other words, adding a new function declaration after template definition does not make it visible, except via ADL
-第一阶段执行的是非限定查找，在实例化点之前，在当前作用域和更高级作用域中可见的一切声明，都可以被考虑，包括已定义的模板和非模板函数，但是若非模板版本的声明在要调用点之后则不会考虑，该声明会在实例化阶段可见，若之前则立刻与它绑定，这大概与实例化阶段才能生成代码有关。
-### 第二阶段
+
+所以non-dependent name调用点之后的函数声明是不可见的。
+### 实例化阶段
 >  Dependent function names are looked up taking the instantiation into account. This uses **all arguments and determines associated namespaces to look up functions in these associated namespace only**.For `built-in types`, the associated namespace added is the `global namespace`. For `other types`, the associated namespaces added are `the namespace they live in` plus `all enclosing namespace`. In addition, the associated namespace of things visible from the `class definition` are added: the associated namespaces of `base classes`, for `templates the namespaces of the template arguments`, etc. This is phase II look-up and also called argument dependent look-up (I think the terms are not entirely identical and the details are not as easy as described above, of course).
 
 第二阶段是通过ADL进行的，但也保留了第一阶段的名字。
@@ -21,7 +22,9 @@ C++17 Standard said：
 * 对于`其他类型`，包括它们在的namespace和其他封闭的namespace（参数与其要有关联）
 * 除此之外，还可以增加基类namespace和模板参数的namespace的可访问部分（若有的话）
 
-ADL的触发条件也要注意，这个要找另一篇文看。
+ADL的触发条件也要注意。
+
+ADL文章链接：
 
 ## 模板基类
 ```cpp
