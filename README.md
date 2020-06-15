@@ -1,6 +1,5 @@
 # Cpp_Note
 ## Template
-[Name lookup](https://github.com/Conzxy/Cpp_Note/blob/master/CPPP/Template/Name%20lookup.md)<br>
 [friend declaration](https://github.com/Conzxy/Cpp_Note/blob/master/CPPP/Template/class%20template%20friend%20declaration.md)<br>
 ## Big Five
 [swap and assignment operator overloading](https://github.com/Conzxy/Cpp_Note/blob/master/CPPP/Big%20Five/assignment%20operator.md)
