@@ -10,9 +10,8 @@ C++17 Standard said：
 名字查找取决于该名字是否依赖于模板，即名字可分为dependent name 和non-dependent name<br>
 ### 第一阶段：
 > For a non-dependent name used in a template definition, unqualified name lookup takes place when the template definition is examined. The binding to the declarations made at that point is not affected by declarations visible at the point of instantiation.
-
-第一阶段执行的是ordinary lookup，是区别于ADL的一种查找方式。(qualified lookup包含OL和ADL)
-> 所谓顺序查找，就是从**函数调用所处的域**开始（如果函数调用处于一个成员函数中，初始域就是类域，如果处于自由函数中，初始域就是名字空间域或者全局域），依次由内到外到各个域进行名字查找，如果在某个域找到该名字的函数，就停止查找，将在**该域**找到的所有重载函数进行`重载决议`，如果**没有合适的候选者或者有多个合适的候选者而导致歧义**，编译器则报错。如果一直找到**全局域也没有找到任何该名字**函数，编译器也报错。
+> in other words, adding a new function declaration after template definition does not make it visible, except via ADL
+第一阶段执行的是非限定查找，在实例化点之前，在当前作用域和更高级作用域中可见的一切声明，都可以被考虑，包括已定义的模板和非模板函数，但是若非模板版本的声明在要调用点之后则不会考虑，该声明会在实例化阶段可见，若之前则立刻与它绑定，这大概与实例化阶段才能生成代码有关。
 ### 第二阶段
 >  Dependent function names are looked up taking the instantiation into account. This uses **all arguments and determines associated namespaces to look up functions in these associated namespace only**.For `built-in types`, the associated namespace added is the `global namespace`. For `other types`, the associated namespaces added are `the namespace they live in` plus `all enclosing namespace`. In addition, the associated namespace of things visible from the `class definition` are added: the associated namespaces of `base classes`, for `templates the namespaces of the template arguments`, etc. This is phase II look-up and also called argument dependent look-up (I think the terms are not entirely identical and the details are not as easy as described above, of course).
 
@@ -65,7 +64,7 @@ int main(){
     b.g();
 }
 ```
-f是个non-dependent name，在模板定义阶段进行查找，此时一个不受限的模板基类是不会被考虑的（C++标准），因为模板基类在实例化阶段才会生成代码，我们可以将它变成一个dependent name以达到拖延到第二阶段进行查找，从而达到想要的效果。
+f是个non-dependent name，在模板定义阶段进行查找，此时一个不受限的模板基类是不会被考虑的（C++标准），因为模板基类在实例化阶段才会生成代码，我们可以将它变成一个dependent name从而拖延到第二阶段进行查找，从而达到想要的效果。
 this->或者::都可以起到这个作用。
 
 > C++ FAQ:
