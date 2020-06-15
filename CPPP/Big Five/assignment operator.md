@@ -11,7 +11,7 @@ Queue<T>::Queue<T>& operator=(const Queue<T> &rhs)
 }
 ```
 上面这个拷贝赋值运算符重载是错误的，我们首先要清楚swap是以怎样的形式工作的：<br>
-`swap(T &a,T &b) {T temp(move(a));a=move(b);b=move(a);}`<br>
+`swap(T &a,T &b) {T temp(move(a));a=move(b);b=move(temp);}`<br>
 所以`std::swap`需要移动构造函数和移动赋值运算符，而拷贝构造函数和拷贝赋值运算符阻止了编译器自动合成它们（假设我们并没有设置自定义的），swap第一个构造尚且可以用拷贝构造代替移动构造，但是下面的赋值运算符找不到移动赋值运算符，就会不断调用拷贝赋值运算符，因此它会一直卡死在这里，我们可以加个调试信息来看看：<br>
 ```cpp
 ....
