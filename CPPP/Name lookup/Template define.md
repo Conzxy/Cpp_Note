@@ -1,4 +1,4 @@
-# C++中的名字查找
+# Template的名字查找（OL and ADL）
 ## name lookup in template function
 C++17 Standard said：
 > Such names are unbound and are looked up at the point of the template instantiation (17.6.4.1) in both the context of the template definition and the context of the point of instantiation.
@@ -11,7 +11,8 @@ C++17 Standard said：
 ### 第一阶段：
 > For a non-dependent name used in a template definition, unqualified name lookup takes place when the template definition is examined. The binding to the declarations made at that point is not affected by declarations visible at the point of instantiation.
 
-第一阶段执行的是非限定查找，在实例化点之前，在当前作用域和更高级作用域中可见的一切声明，都可以被考虑，包括已定义的模板和非模板函数，但是若非模板版本的声明在要调用该函数之后则不会考虑，该声明会在实例化阶段可见，若之前则立刻与它绑定，这大概与实例化阶段才能生成代码有关。
+第一阶段执行的是ordinary lookup，是区别于ADL的一种查找方式。(qualified lookup包含OL和ADL)
+> 所谓顺序查找，就是从**函数调用所处的域**开始（如果函数调用处于一个成员函数中，初始域就是类域，如果处于自由函数中，初始域就是名字空间域或者全局域），依次由内到外到各个域进行名字查找，如果在某个域找到该名字的函数，就停止查找，将在**该域**找到的所有重载函数进行`重载决议`，如果**没有合适的候选者或者有多个合适的候选者而导致歧义**，编译器则报错。如果一直找到**全局域也没有找到任何该名字**函数，编译器也报错。
 ### 第二阶段
 >  Dependent function names are looked up taking the instantiation into account. This uses **all arguments and determines associated namespaces to look up functions in these associated namespace only**.For `built-in types`, the associated namespace added is the `global namespace`. For `other types`, the associated namespaces added are `the namespace they live in` plus `all enclosing namespace`. In addition, the associated namespace of things visible from the `class definition` are added: the associated namespaces of `base classes`, for `templates the namespaces of the template arguments`, etc. This is phase II look-up and also called argument dependent look-up (I think the terms are not entirely identical and the details are not as easy as described above, of course).
 
@@ -21,7 +22,7 @@ C++17 Standard said：
 * 对于`其他类型`，包括它们在的namespace和其他封闭的namespace（参数与其要有关联）
 * 除此之外，还可以增加基类namespace和模板参数的namespace的可访问部分（若有的话）
 
-
+ADL的触发条件也要注意，这个要找另一篇文看。
 
 ## 模板基类
 ```cpp
@@ -108,8 +109,8 @@ int main ()
 
 > Why the result is "TS"?
 
-adl(S())是non-dependent name，又非模板版本在被调用点以下，那么在实例化阶段才会可见，此时只有template版本可以绑定，所以输出"T"。<br>
-adl(t)是dependent name，此时在作用域内有两个函数可以匹配，但非模板的更好，所以输出"S"。<br>
+adl(S())是non-dependent name，只是normal lookup，non-template版本在被调用点以下，那么在实例化阶段才会可见，此时只有template版本可以绑定，所以输出"T"。<br>
+adl(t)是dependent name，按ADL查找，那么有两个函数可以匹配，但非模板优于模板，所以输出"S"。<br>
 如果将非模板版本调至调用点之前，则输出"SS"
 
 2.
@@ -145,3 +146,5 @@ void h() {
 
 ## 为什么要分两次查找
 > What is the reason for this splitting name lookup into phases? For one thing, we want names to be looked up early, **to spot errors when a template is parsed, rather than used.** However, dependent names simply cannot be looked up before the template arguments are known. Therefore, only nondependent names are bound at the point of definition of a template, and dependent names are bound at the point of instantiation, when a template is actually used.
+
+分两次查找就是为了在实例化阶段之前就除掉部分错误，这样non-dependent name在定义阶段试水，因为它不依赖于模板的实例化，第二阶段才是dependent name的测试，因为此时模板才被真正的使用了，即实例化完成。
