@@ -1,0 +1,5 @@
+# static语义
+
+一般的static是指linkage为internal linkage
+
+而成员函数和成员变量的static是脱离对象，依附于类的语义，本质还是external linkage
